@@ -14,6 +14,8 @@ import session from 'express-session';
 import meetRoutes from './routes/meet.route';
 
 import projectRoutes from './routes/projectRoutes';
+
+import mongoose from 'mongoose';
 dotenv.config();
 
 const app: Application = express();
@@ -31,7 +33,13 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
+const uri = process.env.MONGO_URI;
 
+mongoose
+  .connect(uri!)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+  
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
@@ -49,9 +57,9 @@ app.use("/api/meet", meetRoutes);
 // Error Handling Middleware
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err.stack);
-  return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ 
-    status: false, 
-    message: err.message || 'Internal Server Error' 
+  return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+    status: false,
+    message: err.message || 'Internal Server Error'
   });
 };
 
