@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const userController_1 = __importDefault(require("../Controllers/userController"));
+const uservalidate_1 = require("../middleware/validator/uservalidate");
+const router = (0, express_1.Router)();
+router.route("/register").post(uservalidate_1.validateUserRegister, userController_1.default.RegisterUser);
+router.route("/login").post(uservalidate_1.validateUserLogin, userController_1.default.LoginUser);
+router.route("/verify_otp").post(userController_1.default.VerifyOTP);
+router.route("/resend_otp").post(userController_1.default.ResendOTP);
+router.route("/getprofile").post(userController_1.default.getProfileDetail);
+router.route("/update_pass").put(authMiddleware_1.Authentication, userController_1.default.UpdatePassword);
+router.route("/get_user").get(authMiddleware_1.Authentication, userController_1.default.getUserDetail);
+router.route("/update").put(authMiddleware_1.Authentication, userController_1.default.UpdateUser);
+router.route("/verify_pass").post(authMiddleware_1.Authentication, userController_1.default.VerifyPassword);
+router.route("/forget_pass").get(authMiddleware_1.Authentication, userController_1.default.forgotPasswordOTP);
+router.route("/get_user/:id").get(authMiddleware_1.Authentication, userController_1.default.getUserById);
+exports.default = router;
